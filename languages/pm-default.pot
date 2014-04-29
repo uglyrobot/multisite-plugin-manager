@@ -1,0 +1,145 @@
+# Copyright (C) 2014 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/multisite-plugin-manager\n"
+"POT-Creation-Date: 2011-03-29 17:11:43+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: plugin-manager.php:52
+msgid "Plugin Management"
+msgstr ""
+
+#: plugin-manager.php:64
+msgid "Manage Plugins"
+msgstr ""
+
+#: plugin-manager.php:67
+msgid "Settings Saved"
+msgstr ""
+
+#: plugin-manager.php:86
+msgid "Help"
+msgstr ""
+
+#: plugin-manager.php:87
+msgid "Auto Activation"
+msgstr ""
+
+#: plugin-manager.php:88
+msgid "When auto activation is on for a plugin, newly created blogs will have that plugin activated automatically. This does not affect existing blogs."
+msgstr ""
+
+#: plugin-manager.php:89 plugin-manager.php:105 plugin-manager.php:250
+msgid "User Control"
+msgstr ""
+
+#: plugin-manager.php:91
+msgid "Choose if all users, pro sites only, or no one will be able to activate/deactivate the plugin through the <cite>Plugins</cite> menu. When you turn it off, users that have the plugin activated are grandfathered in, and will continue to have access until they deactivate it."
+msgstr ""
+
+#: plugin-manager.php:93
+msgid "When user control is enabled for a plugin, all users will be able to activate/deactivate the plugin through the <cite>Plugins</cite> menu. When you turn it off, users that have the plugin activated are grandfathered in, and will continue to have access until they deactivate it."
+msgstr ""
+
+#: plugin-manager.php:96
+msgid "Mass Activation/Deactivation"
+msgstr ""
+
+#: plugin-manager.php:97
+msgid "Mass activate and Mass deactivate buttons activate/deactivates the specified plugin for all blogs. This is different than the \"Network Activate\" option on the network plugins page, as users can later disable it and this only affects existing blogs. It also ignores the User Control option."
+msgstr ""
+
+#: plugin-manager.php:102 plugin-manager.php:251
+msgid "Name"
+msgstr ""
+
+#: plugin-manager.php:103 plugin-manager.php:252
+msgid "Version"
+msgstr ""
+
+#: plugin-manager.php:104 plugin-manager.php:253
+msgid "Author"
+msgstr ""
+
+#: plugin-manager.php:105
+msgid "Users may activate/deactivate"
+msgstr ""
+
+#: plugin-manager.php:106
+msgid "Mass Activate"
+msgstr ""
+
+#: plugin-manager.php:107
+msgid "Mass Deactivate"
+msgstr ""
+
+#: plugin-manager.php:155
+msgid "None"
+msgstr ""
+
+#: plugin-manager.php:157
+msgid "Pro Sites"
+msgstr ""
+
+#: plugin-manager.php:158
+msgid "All Users"
+msgstr ""
+
+#: plugin-manager.php:159
+msgid "Auto-Activate (All Users)"
+msgstr ""
+
+#: plugin-manager.php:164
+msgid "Activate All"
+msgstr ""
+
+#: plugin-manager.php:165
+msgid "Deactivate All"
+msgstr ""
+
+#: plugin-manager.php:172
+msgid "Update Options"
+msgstr ""
+
+#: plugin-manager.php:243
+msgid "Plugin Override Options"
+msgstr ""
+
+#: plugin-manager.php:245
+msgid "Checked plugins here will be accessible to this site, overriding the sitewide <a href=\"plugins.php?page=plugin-management\">Plugin Management</a> settings. Uncheck to return to sitewide settings."
+msgstr ""
+
+#: plugin-manager.php:250
+msgid "Blog users may activate/deactivate"
+msgstr ""
+
+#: plugin-manager.php:267
+msgid "Enable"
+msgstr ""
+
+#: plugin-manager.php:308 plugin-manager.php:331
+msgid "Failed to mass activate: Your multisite network is too large for this function."
+msgstr ""
+
+#: plugin-manager.php:321
+msgid " has been MASS ACTIVATED."
+msgstr ""
+
+#: plugin-manager.php:323
+msgid "Failed to mass activate: error selecting blogs"
+msgstr ""
+
+#: plugin-manager.php:344
+msgid " has been MASS DEACTIVATED."
+msgstr ""
+
+#: plugin-manager.php:346
+msgid "Failed to mass deactivate: error selecting blogs"
+msgstr ""
