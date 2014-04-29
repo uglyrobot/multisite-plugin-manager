@@ -23,6 +23,8 @@ Also, if you use the excellent <a href="http://premium.wpmudev.org/project/pro-s
 
 A free plugin by Aaron Edwards of <a href="http://uglyrobot.com/">UglyRobot Web Development</a>.
 
+<a href="https://github.com/uglyrobot/multisite-plugin-manager">Contribute on GitHub</a>
+
 == Installation ==
 = To Install: =
 
@@ -50,7 +52,9 @@ A free plugin by Aaron Edwards of <a href="http://uglyrobot.com/">UglyRobot Web 
 No, this plugin is only compatible (and useful) with Multisite installs.
 
 = Do I need the Pro Sites plugin installed? =
-Not at all, but if you install the <a href="http://premium.wpmudev.org/project/pro-sites">Pro Sites plugin from WPMU DEV</a> the options to charge for access to certain plugins will appear in the dropdowns.
+Not at all, but if you install the <a href="http://premium.wpmudev.org/project/pro-sites/">Pro Sites plugin from WPMU DEV</a> the options to charge for access to certain plugins will appear in the dropdowns.
+
+<a href="https://github.com/uglyrobot/multisite-plugin-manager">Contribute on GitHub</a>
 
 == Screenshots ==
 
