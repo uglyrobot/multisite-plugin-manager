@@ -169,7 +169,7 @@ class PluginManager {
 		?>
 		</table>
 		<p class="submit">
-		  <input name="Submit" value="<?php _e('Update Options', 'pm') ?>" type="submit">
+		  <input name="Submit" class="button-primary" value="<?php _e('Update Options', 'pm') ?>" type="submit">
 		</p>
 		</form>
 		</div>
