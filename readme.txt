@@ -3,7 +3,7 @@ Contributors: uglyrobot
 Tags: multisite, wpmu, plugins
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W66QWST9B9KRN
 Requires at least: 3.7.3
-Tested up to: 4.4
+Tested up to: 4.4 Beta 1
 Stable tag: 3.1.4
 
 The essential plugin for every multisite install! Manage plugin access permissions across your entire multisite network.
