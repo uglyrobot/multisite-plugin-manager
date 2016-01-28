@@ -256,9 +256,6 @@ class PluginManager {
 		</thead>
 	  <?php
 	  
-	  
-	  switch_to_blog($blog_id);
-	  
 	  foreach ( $plugins as $file => $p ) {
 
 	  	//skip network plugins or network activated plugins
@@ -291,7 +288,6 @@ class PluginManager {
 			<?php
 	  }
 	  echo '</table>';
-	  restore_current_blog();
 	}
 
 	//process options from wpmu-blogs.php edit page. Overrides sitewide control settings for an individual blog.
