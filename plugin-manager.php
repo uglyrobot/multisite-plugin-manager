@@ -251,9 +251,14 @@ class PluginManager {
 	    <th><?php _e('Name', 'pm'); ?></th>
 			<th><?php _e('Version', 'pm'); ?></th>
 			<th><?php _e('Author', 'pm'); ?></th>
+			<th><?php _e('Activation', 'pm'); ?></th>
 		</tr>
 		</thead>
 	  <?php
+	  
+	  
+	  switch_to_blog($blog_id);
+	  
 	  foreach ( $plugins as $file => $p ) {
 
 	  	//skip network plugins or network activated plugins
@@ -263,6 +268,7 @@ class PluginManager {
 			<tr>
 				<td>
 				<?php
+
 			  $checked = (in_array($file, $override_plugins)) ? 'checked="checked"' : '';
 			  echo '<label><input name="plugins['.$file.']" type="checkbox" value="1" '.$checked.'/> ' . __('Enable', 'mp') . '</label>';
 				?>
@@ -270,14 +276,31 @@ class PluginManager {
 		 		<td><?php echo $p['Name']?></td>
 		 		<td><?php echo $p['Version']?></td>
 		 		<td><?php echo $p['Author']?></td>
+		 		<td><?php 
+		 			if ( is_plugin_active( $file) ) {
+		 				?><button class="button" type="submit" name="deactivate-plugin" value="<?php esc_attr_e($file); ?>"><?php
+		 					_e('Deactivate plugin');
+		 				?></button><?php
+		 			} else {
+		 				?><button class="button-primary" type="submit" name="activate-plugin" value="<?php esc_attr_e($file); ?>"><?php
+		 					_e('Activate plugin');
+		 				?></button><?php
+		 			}
+		 		?></td>
 			</tr>
 			<?php
 	  }
 	  echo '</table>';
+	  restore_current_blog();
 	}
 
 	//process options from wpmu-blogs.php edit page. Overrides sitewide control settings for an individual blog.
 	function blog_options_form_process() {
+	  if ( isset( $_POST['deactivate-plugin'] ) ) {
+		deactivate_plugins($_POST['deactivate-plugin']);
+	  } else if ( isset( $_POST['activate-plugin'] ) ) {
+		activate_plugin($_POST['activate-plugin']);
+	  }
 	  $override_plugins = array();
 	  if (is_array($_POST['plugins'])) {
 	    foreach ((array)$_POST['plugins'] as $plugin => $value) {
