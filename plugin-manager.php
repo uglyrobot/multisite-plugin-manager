@@ -299,7 +299,7 @@ class PluginManager {
 	  if ( isset( $_POST['deactivate-plugin'] ) ) {
 		deactivate_plugins($_POST['deactivate-plugin']);
 	  } else if ( isset( $_POST['activate-plugin'] ) ) {
-		activate_plugin($_POST['activate-plugin']);
+		activate_plugin($_POST['activate-plugin'], null, false, true );
 	  }
 	  $override_plugins = array();
 	  if (is_array($_POST['plugins'])) {
