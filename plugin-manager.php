@@ -286,7 +286,7 @@ class PluginManager {
 	  <thead>
 		<tr>
 			<th title="<?php _e('Blog users may activate/deactivate', 'pm') ?>"><?php _e('User Control', 'pm') ?></th>
-	    <th><?php _e('Network Setting', 'pm'); ?></th>
+	    <th><?php _e('Network Default', 'pm'); ?></th>
 	    <th><?php _e('Name', 'pm'); ?></th>
 			<th><?php _e('Version', 'pm'); ?></th>
 			<th><?php _e('Author', 'pm'); ?></th>
