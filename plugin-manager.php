@@ -186,6 +186,38 @@ class PluginManager {
 		}
 	}
 
+	function get_controllable_plugins(){
+		$auto_activate = (array)get_site_option('pm_auto_activate_list');
+		$user_control = (array)get_site_option('pm_user_control_list');
+		$supporter_control = (array)get_site_option('pm_supporter_control_list');
+		$override_plugins = (array)get_option('pm_plugin_override_list');
+		
+		// check if $override_plugins is not a numeric array
+		if ( 0 === array_sum( array_keys( $override_plugins ) ) ) {
+			$override_allow = array_keys( array_filter( $override_plugins, array($this,'_filter_value_1') ) );
+			$override_deny  = array_keys( array_filter( $override_plugins, array($this,'_filter_value_0') ) );
+		} else {
+			// old style: $override_plugins contains controllabla plugins
+			$override_allow = $override_plugins;
+			$override_deny = array();
+		}
+		
+		
+		// merge allowed plugins
+		$controllable_plugins = array_unique( array_merge( $auto_activate, $user_control, $supporter_control, $override_allow ) );
+		
+		// subtract denied plugins
+		$controllable_plugins = array_diff($controllable_plugins, $override_deny );
+
+		// here we go.
+		return $controllable_plugins;
+	}
+	function _filter_value_0( $value ) {
+		return $value === '0';
+	}
+	function _filter_value_1( $value ) {
+		return $value === '1';
+	}
   function remove_plugin_update_row() {
 	  if ( !is_network_admin() && !is_super_admin() ) {
     	remove_all_actions('after_plugin_row');
@@ -238,6 +270,12 @@ class PluginManager {
 
 	  $plugins = get_plugins();
 	  $override_plugins = (array)get_blog_option($blog_id, 'pm_plugin_override_list');
+
+		$auto_activate = (array)get_site_option('pm_auto_activate_list');
+		$user_control = (array)get_site_option('pm_user_control_list');
+		$supporter_control = (array)get_site_option('pm_supporter_control_list');
+
+
 	  ?>
 	  </table>
 	  <h3><?php _e('Plugin Override Options', 'pm') ?></h3>
@@ -248,12 +286,24 @@ class PluginManager {
 	  <thead>
 		<tr>
 			<th title="<?php _e('Blog users may activate/deactivate', 'pm') ?>"><?php _e('User Control', 'pm') ?></th>
+	    <th><?php _e('Network Setting', 'pm'); ?></th>
 	    <th><?php _e('Name', 'pm'); ?></th>
 			<th><?php _e('Version', 'pm'); ?></th>
 			<th><?php _e('Author', 'pm'); ?></th>
+			<th><?php _e('Activation', 'pm'); ?></th>
 		</tr>
 		</thead>
 	  <?php
+	  
+	  
+	  switch_to_blog($blog_id);
+	  
+	  $control_options = array(
+	  	''	=> __('— Network default —', 'pm'),
+	  	'1'	=> __('Allow User Control', 'pm'),
+	  	'0'	=> __('Deny User Control', 'pm'),
+	  );
+	  
 	  foreach ( $plugins as $file => $p ) {
 
 	  	//skip network plugins or network activated plugins
@@ -263,25 +313,68 @@ class PluginManager {
 			<tr>
 				<td>
 				<?php
+			  //*
+			  printf('<select name="plugins[%s]">',$file);
+			  foreach ( $control_options as $value => $label ) {
+			  	$plugin_status = in_array($file, $override_plugins) ? '1' : ( isset($override_plugins[$file]) ? $override_plugins[$file] : '');
+			  	printf('<option value="%s" %s>%s</option>', 
+			  			$value, 
+			  			selected($value, $plugin_status ), 
+			  			$label
+			  		);
+			  }
+			  echo '</select>'
+			  /*/
 			  $checked = (in_array($file, $override_plugins)) ? 'checked="checked"' : '';
 			  echo '<label><input name="plugins['.$file.']" type="checkbox" value="1" '.$checked.'/> ' . __('Enable', 'mp') . '</label>';
+			  //*/
 				?>
 				</td>
-		 		<td><?php echo $p['Name']?></td>
-		 		<td><?php echo $p['Version']?></td>
-		 		<td><?php echo $p['Author']?></td>
+		 		<td><?php 
+		 			if ( in_array( $file, $auto_activate ) ) {
+		 				_e('Auto-Activate (All Users)', 'pm');
+		 			} else if ( function_exists('is_pro_site') && in_array( $file, $supporter_control ) ) {
+		 				_e('Pro Sites', 'pm');
+		 			} else if ( in_array( $file, $user_control ) ) {
+		 				_e('All Users', 'pm');
+		 			} else {
+		 				_e('None', 'pm');
+		 			}
+		 		?></td>
+		 		<td><?php echo $p['Name'] ?></td>
+		 		<td><?php echo $p['Version'] ?></td>
+		 		<td><?php echo $p['Author'] ?></td>
+		 		<td><?php 
+		 			if ( is_plugin_active( $file) ) {
+		 				?><button class="button" type="submit" name="deactivate-plugin" value="<?php esc_attr_e($file); ?>"><?php
+		 					_e('Deactivate plugin');
+		 				?></button><?php
+		 			} else {
+		 				?><button class="button-primary" type="submit" name="activate-plugin" value="<?php esc_attr_e($file); ?>"><?php
+		 					_e('Activate plugin');
+		 				?></button><?php
+		 			}
+		 		?></td>
 			</tr>
 			<?php
 	  }
 	  echo '</table>';
+	  restore_current_blog();
 	}
 
 	//process options from wpmu-blogs.php edit page. Overrides sitewide control settings for an individual blog.
 	function blog_options_form_process() {
+	  if ( isset( $_POST['deactivate-plugin'] ) ) {
+		deactivate_plugins($_POST['deactivate-plugin']);
+	  } else if ( isset( $_POST['activate-plugin'] ) ) {
+		activate_plugin($_POST['activate-plugin'], null, false, true );
+	  }
 	  $override_plugins = array();
 	  if (is_array($_POST['plugins'])) {
 	    foreach ((array)$_POST['plugins'] as $plugin => $value) {
-	      $override_plugins[] = $plugin;
+	      if ( $value !== '' ) {
+		      $override_plugins[$plugin] = $value;
+		  }
 	    }
 	    update_option( "pm_plugin_override_list", $override_plugins );
 	  } else {
@@ -353,15 +446,10 @@ class PluginManager {
 		if (is_super_admin()) //don't filter siteadmin
 	    return $all_plugins;
 
-	  $auto_activate = (array)get_site_option('pm_auto_activate_list');
-	  $user_control = (array)get_site_option('pm_user_control_list');
-	  $supporter_control = (array)get_site_option('pm_supporter_control_list');
-	  $override_plugins = (array)get_option('pm_plugin_override_list');
-
+		$controllable_plugins = $this->get_controllable_plugins();
+		
 	  foreach ( (array)$all_plugins as $plugin_file => $plugin_data) {
-	    if (in_array($plugin_file, $user_control) || in_array($plugin_file, $auto_activate) || in_array($plugin_file, $supporter_control) || in_array($plugin_file, $override_plugins)) {
-	      //do nothing - leave it in
-	    } else {
+	    if ( ! in_array($plugin_file, $controllable_plugins) ) {
 	      unset($all_plugins[$plugin_file]); //remove plugin
 	    }
 	  }
@@ -440,7 +528,7 @@ class PluginManager {
 	  $user_control = (array)get_site_option('pm_user_control_list');
 	  $supporter_control = (array)get_site_option('pm_supporter_control_list');
 	  $override_plugins = (array)get_option('pm_plugin_override_list');
-
+	  
 	  foreach ( (array)$active_plugins as $plugin_file => $plugin_data) {
 	    if (in_array($plugin_file, $user_control) || in_array($plugin_file, $auto_activate) || in_array($plugin_file, $supporter_control) || in_array($plugin_file, $override_plugins)) {
 	      //do nothing - leave it in
