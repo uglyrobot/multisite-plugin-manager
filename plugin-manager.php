@@ -290,7 +290,6 @@ class PluginManager {
 	    <th><?php _e('Name', 'pm'); ?></th>
 			<th><?php _e('Version', 'pm'); ?></th>
 			<th><?php _e('Author', 'pm'); ?></th>
-			<th><?php _e('Activation', 'pm'); ?></th>
 		</tr>
 		</thead>
 	  <?php
@@ -330,17 +329,6 @@ class PluginManager {
 			  //*/
 				?>
 				</td>
-		 		<td><?php 
-		 			if ( in_array( $file, $auto_activate ) ) {
-		 				_e('Auto-Activate (All Users)', 'pm');
-		 			} else if ( function_exists('is_pro_site') && in_array( $file, $supporter_control ) ) {
-		 				_e('Pro Sites', 'pm');
-		 			} else if ( in_array( $file, $user_control ) ) {
-		 				_e('All Users', 'pm');
-		 			} else {
-		 				_e('None', 'pm');
-		 			}
-		 		?></td>
 		 		<td><?php echo $p['Name'] ?></td>
 		 		<td><?php echo $p['Version'] ?></td>
 		 		<td><?php echo $p['Author'] ?></td>
@@ -364,11 +352,6 @@ class PluginManager {
 
 	//process options from wpmu-blogs.php edit page. Overrides sitewide control settings for an individual blog.
 	function blog_options_form_process() {
-	  if ( isset( $_POST['deactivate-plugin'] ) ) {
-		deactivate_plugins($_POST['deactivate-plugin']);
-	  } else if ( isset( $_POST['activate-plugin'] ) ) {
-		activate_plugin($_POST['activate-plugin'], null, false, true );
-	  }
 	  $override_plugins = array();
 	  if (is_array($_POST['plugins'])) {
 	    foreach ((array)$_POST['plugins'] as $plugin => $value) {
