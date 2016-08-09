@@ -3,12 +3,14 @@
 Plugin Name: Multisite Plugin Manager
 Plugin URI: http://wordpress.org/extend/plugins/multisite-plugin-manager/
 Description: The essential plugin for every multisite install! Manage plugin access permissions across your entire multisite network.
-Version: 3.1.4
+Version: 3.1.5
 Author: Aaron Edwards
 Author URI: http://uglyrobot.com
 Network: true
+*/
 
-Copyright 2009-2014 UglyRobot Web Development (http://uglyrobot.com)
+/*
+Copyright 2009-2016 UglyRobot Web Development (http://uglyrobot.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
@@ -55,7 +57,7 @@ class PluginManager {
 	function admin_page() {
 
 		if (!current_user_can('manage_network_options'))
-			die('Nice Try!');
+			{die('Nice Try!');}
 
 		$this->process_form();
 		?>
@@ -117,7 +119,7 @@ class PluginManager {
 
 		  //skip network plugins or network activated plugins
 		  if ( is_network_only_plugin( $file ) || is_plugin_active_for_network( $file ) )
-		    continue;
+		    {continue;}
 			?>
 			<tr>
 				<td><?php echo $p['Name']?></td>
@@ -154,7 +156,7 @@ class PluginManager {
 
 		 			$opts = '<option value="none"'.$n_opt.'>' . __('None', 'pm') . '</option>'."\n";
 					if ( function_exists('is_pro_site'))
-						$opts .= '<option value="supporters"'.$s_opt.'>' . __('Pro Sites', 'pm') . '</option>'."\n";
+						{$opts .= '<option value="supporters"'.$s_opt.'>' . __('Pro Sites', 'pm') . '</option>'."\n";}
 					$opts .= '<option value="all"'.$a_opt.'>' . __('All Users', 'pm') . '</option>'."\n";
 					$opts .= '<option value="auto"'.$auto_opt.'>' . __('Auto-Activate (All Users)', 'pm') . '</option>'."\n";
 
@@ -225,11 +227,11 @@ class PluginManager {
 
 	  	//can't save blank value via update_site_option
 	    if (!$supporter_control)
-	      update_site_option('pm_supporter_control_list', 'EMPTY');
+	      {update_site_option('pm_supporter_control_list', 'EMPTY');}
 	    if (!$user_control)
-	      update_site_option('pm_user_control_list', 'EMPTY');
+	      {update_site_option('pm_user_control_list', 'EMPTY');}
 	    if (!$auto_activate)
-	      update_site_option('pm_auto_activate_list', 'EMPTY');
+	      {update_site_option('pm_auto_activate_list', 'EMPTY');}
 	  }
 	}
 
@@ -258,7 +260,7 @@ class PluginManager {
 
 	  	//skip network plugins or network activated plugins
 		  if ( is_network_only_plugin( $file ) || is_plugin_active_for_network( $file ) )
-		    continue;
+		    {continue;}
 			?>
 			<tr>
 				<td>
@@ -294,22 +296,22 @@ class PluginManager {
 	  require_once( ABSPATH.'wp-admin/includes/plugin.php' );
 
 		$auto_activate = (array)get_site_option('pm_auto_activate_list');
-		if (count($auto_activate)) {
-	  	switch_to_blog($blog_id);
-	    activate_plugins($auto_activate, '', false); //silently activate any plugins
-	    restore_current_blog();
+		if (count($auto_activate) && $auto_activate[0] != 'EMPTY') {
+		    switch_to_blog($blog_id);
+		    activate_plugins($auto_activate, '', false); //silently activate any plugins
+		    restore_current_blog();
 		}
 	}
 
 	function mass_activate($plugin) {
 		global $wpdb;
-		
+
 		if (wp_is_large_network()) {
 			?><div class="error"><p><?php _e('Failed to mass activate: Your multisite network is too large for this function.', 'pm'); ?></p></div><?php
 			return false;
 		}
-		
-    set_time_limit(120);
+
+        set_time_limit(120);
 
 		$blogs = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = {$wpdb->siteid} AND spam = 0");
 		if ($blogs)	{
@@ -319,20 +321,20 @@ class PluginManager {
 		    restore_current_blog();
 			}
 			?><div id="message" class="updated fade"><p><span style="color:#FF3300;"><?php echo esc_html($plugin); ?></span><?php _e(' has been MASS ACTIVATED.', 'pm'); ?></p></div><?php
-  	} else {
-      ?><div class="error"><p><?php _e('Failed to mass activate: error selecting blogs', 'pm'); ?></p></div><?php
+	    } else {
+            ?><div class="error"><p><?php _e('Failed to mass activate: error selecting blogs', 'pm'); ?></p></div><?php
 		}
 	}
 
 	function mass_deactivate($plugin) {
-  	global $wpdb;
-		
+  	    global $wpdb;
+
 		if (wp_is_large_network()) {
 			?><div class="error"><p><?php _e('Failed to mass activate: Your multisite network is too large for this function.', 'pm'); ?></p></div><?php
 			return false;
 		}
-		
-    set_time_limit(120);
+
+        set_time_limit(120);
 
 		$blogs = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = {$wpdb->siteid} AND spam = 0");
 		if ($blogs)	{
@@ -343,7 +345,7 @@ class PluginManager {
 			}
 			?><div id="message" class="updated fade"><p><span style="color:#FF3300;"><?php echo esc_html($plugin); ?></span><?php _e(' has been MASS DEACTIVATED.', 'pm'); ?></p></div><?php
 		} else {
-      ?><div class="error"><p><?php _e('Failed to mass deactivate: error selecting blogs', 'pm'); ?></p></div><?php
+            ?><div class="error"><p><?php _e('Failed to mass deactivate: error selecting blogs', 'pm'); ?></p></div><?php
 		}
 	}
 
@@ -351,7 +353,7 @@ class PluginManager {
 	function remove_plugins($all_plugins) {
 
 		if (is_super_admin()) //don't filter siteadmin
-	    return $all_plugins;
+	    {return $all_plugins;}
 
 	  $auto_activate = (array)get_site_option('pm_auto_activate_list');
 	  $user_control = (array)get_site_option('pm_user_control_list');
@@ -371,9 +373,9 @@ class PluginManager {
 	//plugin activate links
 	function action_links($action_links, $plugin_file, $plugin_data, $context) {
 		global $psts, $blog_id;
-		
+
 	  if (is_network_admin() || is_super_admin()) //don't filter siteadmin
-	    return $action_links;
+	    {return $action_links;}
 
 	  $auto_activate = (array)get_site_option('pm_auto_activate_list');
 	  $user_control = (array)get_site_option('pm_user_control_list');
@@ -402,7 +404,7 @@ class PluginManager {
 		global $pagenow;
 
 	  if (is_super_admin()) //don't filter siteadmin
-	    return; //
+	    {return;} //
 
 	  if ( function_exists('is_pro_site') && $pagenow == 'plugins.php') {
 	    if ( !is_pro_site() ) {
@@ -430,11 +432,11 @@ class PluginManager {
 	function check_activated($active_plugins) {
 
 	  if (is_super_admin()) //don't filter siteadmin
-	    return $active_plugins;
+	    {return $active_plugins;}
 
 	  //only perform check right after activation hack attempt
 	  if ($_POST['action'] != 'activate-selected' && $_POST['action2'] != 'activate-selected')
-	    return $active_plugins;
+	    {return $active_plugins;}
 
 	  $auto_activate = (array)get_site_option('pm_auto_activate_list');
 	  $user_control = (array)get_site_option('pm_user_control_list');
@@ -454,7 +456,7 @@ class PluginManager {
 	    if (count($supporter_control) && !is_pro_site()) {
 	      deactivate_plugins($supporter_control, true); //silently remove any plugins
 	      foreach ($supporter_control as $plugin_file)
-	        unset($active_plugins[$plugin_file]);
+	        {unset($active_plugins[$plugin_file]);}
 	    }
 	  }
 

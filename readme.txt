@@ -3,8 +3,8 @@ Contributors: uglyrobot
 Tags: multisite, wpmu, plugins
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W66QWST9B9KRN
 Requires at least: 3.7.3
-Tested up to: 4.3.1
-Stable tag: 3.1.4
+Tested up to: 4.6
+Stable tag: 3.1.5
 
 The essential plugin for every multisite install! Manage plugin access permissions across your entire multisite network.
 
@@ -19,7 +19,7 @@ Previously known as **WPMU Plugin Manager**, it uses a backend options page to a
 * And as Super Admin, you can override all these to activate specific plugins on the sites you choose!
 * Removes the plugin meta row links (Version, Author, Plugin) and any update messages for blog admins
 
-Also, if you use the excellent <a href="http://premium.wpmudev.org/project/pro-sites">Pro Sites plugin from WPMU DEV</a> you will be able to charge for access to certain plugins!
+Also, if you use the excellent <a href="https://premium.wpmudev.org/project/pro-sites/">Pro Sites plugin from WPMU DEV</a> you will be able to charge for access to certain plugins!
 
 A free plugin by Aaron Edwards of <a href="http://uglyrobot.com/">UglyRobot Web Development</a>.
 
@@ -52,7 +52,7 @@ A free plugin by Aaron Edwards of <a href="http://uglyrobot.com/">UglyRobot Web 
 No, this plugin is only compatible (and useful) with Multisite installs.
 
 = Do I need the Pro Sites plugin installed? =
-Not at all, but if you install the <a href="http://premium.wpmudev.org/project/pro-sites/">Pro Sites plugin from WPMU DEV</a> the options to charge for access to certain plugins will appear in the dropdowns.
+Not at all, but if you install the <a href="https://premium.wpmudev.org/project/pro-sites/">Pro Sites plugin from WPMU DEV</a> the options to charge for access to certain plugins will appear in the dropdowns.
 
 <a href="https://github.com/uglyrobot/multisite-plugin-manager">Contribute on GitHub</a>
 
@@ -62,6 +62,10 @@ Not at all, but if you install the <a href="http://premium.wpmudev.org/project/p
 2. Overriding allowed plugins per site
 
 == Changelog ==
+
+= 3.1.5 =
+* Fix: PHP warning in some cases when it auto activates on new blog signups
+* Fix: Missing header errors on some installs when activating
 
 = 3.1.4 =
 * Fix: Fatal error: Call to undefined function wp_get_current_user() while activating plugins
