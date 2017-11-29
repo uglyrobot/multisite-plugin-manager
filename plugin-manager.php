@@ -32,7 +32,11 @@ class PluginManager {
 		//declare hooks
 		add_action( 'network_admin_menu', array( &$this, 'add_menu' ) );
 		add_action( 'wpmu_new_blog', array( &$this, 'new_blog' ), 50 ); //auto activation hook
-		add_filter( 'all_plugins', array( &$this, 'remove_plugins' ) );
+
+		if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+			add_filter( 'all_plugins', array( &$this, 'remove_plugins' ) );
+		}
+
 		add_filter( 'plugin_action_links', array( &$this, 'action_links' ), 10, 4 );
 		//add_filter( 'active_plugins', array( &$this, 'check_activated' ) );
 		add_action( 'admin_notices', array( &$this, 'supporter_message' ) );
