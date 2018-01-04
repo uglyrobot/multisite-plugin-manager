@@ -3,8 +3,8 @@ Contributors: uglyrobot
 Tags: multisite, wpmu, plugins
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W66QWST9B9KRN
 Requires at least: 3.7.3
-Tested up to: 4.6
-Stable tag: 3.1.5
+Tested up to: 4.9.1
+Stable tag: 3.1.6
 
 The essential plugin for every multisite install! Manage plugin access permissions across your entire multisite network.
 
@@ -62,6 +62,9 @@ Not at all, but if you install the <a href="https://premium.wpmudev.org/project/
 2. Overriding allowed plugins per site
 
 == Changelog ==
+
+= 3.1.6 =
+* Fix: Add WP CLI `plugin list` compatibility @props Ryan Williams
 
 = 3.1.5 =
 * Fix: PHP warning in some cases when it auto activates on new blog signups

@@ -3,14 +3,14 @@
 Plugin Name: Multisite Plugin Manager
 Plugin URI: http://wordpress.org/extend/plugins/multisite-plugin-manager/
 Description: The essential plugin for every multisite install! Manage plugin access permissions across your entire multisite network.
-Version: 3.1.5
+Version: 3.1.6
 Author: Aaron Edwards
 Author URI: http://uglyrobot.com
 Network: true
 */
 
 /*
-Copyright 2009-2016 UglyRobot Web Development (http://uglyrobot.com)
+Copyright 2009-2017 UglyRobot Web Development (http://uglyrobot.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License (Version 2 - GPLv2) as published by
@@ -29,29 +29,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 class PluginManager {
 
 	function __construct() {
-		//declare hooks
+		// declare hooks.
 		add_action( 'network_admin_menu', array( &$this, 'add_menu' ) );
-		add_action( 'wpmu_new_blog', array( &$this, 'new_blog' ), 50 ); //auto activation hook
+		add_action( 'wpmu_new_blog', array( &$this, 'new_blog' ), 50 ); // auto activation hook.
 
 		if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 			add_filter( 'all_plugins', array( &$this, 'remove_plugins' ) );
 		}
 
 		add_filter( 'plugin_action_links', array( &$this, 'action_links' ), 10, 4 );
-		//add_filter( 'active_plugins', array( &$this, 'check_activated' ) );
+
 		add_action( 'admin_notices', array( &$this, 'supporter_message' ) );
 		add_action( 'plugins_loaded', array( &$this, 'localization' ) );
 
-		//individual blog options
+		// individual blog options.
 		add_action( 'wpmueditblogaction', array( &$this, 'blog_options_form' ) );
 		add_action( 'wpmu_update_blog_options', array( &$this, 'blog_options_form_process' ) );
 
-		add_filter( 'plugin_row_meta' , array( &$this, 'remove_plugin_meta' ), 10, 2 );
+		add_filter( 'plugin_row_meta', array( &$this, 'remove_plugin_meta' ), 10, 2 );
 		add_action( 'admin_init', array( &$this, 'remove_plugin_update_row' ) );
 	}
 
 	function localization() {
-		load_plugin_textdomain('pm', false, '/multisite-plugin-manager/languages/');
+		load_plugin_textdomain( 'pm', false, '/multisite-plugin-manager/languages/' );
 	}
 
 	function add_menu() {
@@ -69,7 +69,7 @@ class PluginManager {
 		<div class="icon32" id="icon-plugins"><br></div>
 		<h2><?php _e('Manage Plugins', 'pm'); ?></h2>
 
-		<?php if (isset($_REQUEST['saved'])) { ?>
+		<?php if ( isset($_REQUEST['saved']) ) { ?>
 		<div id="message" class="updated fade"><p><?php _e('Settings Saved', 'pm'); ?></p></div>
 		<?php }
 
@@ -195,7 +195,7 @@ class PluginManager {
   function remove_plugin_update_row() {
 	  if ( !is_network_admin() && !is_super_admin() ) {
     	remove_all_actions('after_plugin_row');
-		}
+        }
 	}
 
 	function process_form() {
@@ -285,7 +285,7 @@ class PluginManager {
 	//process options from wpmu-blogs.php edit page. Overrides sitewide control settings for an individual blog.
 	function blog_options_form_process() {
 	  $override_plugins = array();
-	  if (is_array($_POST['plugins'])) {
+	  if ( isset( $_POST['plugins'] ) && is_array($_POST['plugins'])) {
 	    foreach ((array)$_POST['plugins'] as $plugin => $value) {
 	      $override_plugins[] = $plugin;
 	    }
@@ -319,7 +319,7 @@ class PluginManager {
 
 		$blogs = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = {$wpdb->siteid} AND spam = 0");
 		if ($blogs)	{
-		  foreach($blogs as $blog_id)	{
+		  foreach($blogs as $blog_id) {
 	   		switch_to_blog($blog_id);
 		    activate_plugin($plugin); //silently activate the plugin
 		    restore_current_blog();
@@ -424,47 +424,6 @@ class PluginManager {
 	//use jquery to remove associated checkboxes to prevent mass activation (usability, not security)
 	function remove_checks($plugin_file) {
 	  echo '<script type="text/javascript">jQuery("input:checkbox[value=\''.esc_js($plugin_file).'\']).remove();</script>';
-	}
-
-	/*
-	Removes activated plugins that should not have been activated (multi). Single activations
-	are additionaly protected by a nonce field. Dirty hack in case someone uses firebug or
-	something to hack the post and simulate a bulk activation. I'd rather prevent
-	them from being activated in the first place, but there are no hooks for that! The
-	display will show the activated status, but really they are not. Only hacking attempts
-	will see this though! */
-	function check_activated($active_plugins) {
-
-	  if (is_super_admin()) //don't filter siteadmin
-	    {return $active_plugins;}
-
-	  //only perform check right after activation hack attempt
-	  if ($_POST['action'] != 'activate-selected' && $_POST['action2'] != 'activate-selected')
-	    {return $active_plugins;}
-
-	  $auto_activate = (array)get_site_option('pm_auto_activate_list');
-	  $user_control = (array)get_site_option('pm_user_control_list');
-	  $supporter_control = (array)get_site_option('pm_supporter_control_list');
-	  $override_plugins = (array)get_option('pm_plugin_override_list');
-
-	  foreach ( (array)$active_plugins as $plugin_file => $plugin_data) {
-	    if (in_array($plugin_file, $user_control) || in_array($plugin_file, $auto_activate) || in_array($plugin_file, $supporter_control) || in_array($plugin_file, $override_plugins)) {
-	      //do nothing - leave it in
-	    } else {
-	      deactivate_plugins($plugin_file, true); //silently remove any plugins
-	      unset($active_plugins[$plugin_file]);
-	    }
-	  }
-
-	  if ( function_exists('is_pro_site') ) {
-	    if (count($supporter_control) && !is_pro_site()) {
-	      deactivate_plugins($supporter_control, true); //silently remove any plugins
-	      foreach ($supporter_control as $plugin_file)
-	        {unset($active_plugins[$plugin_file]);}
-	    }
-	  }
-
-	  return $active_plugins;
 	}
 }
 
