@@ -215,9 +215,7 @@ class PluginManager {
 	    $user_control = array();
 	    $auto_activate = array();
 	  	foreach ($_POST['control'] as $plugin => $value) {
-	  	  if ($value == 'none') {
-	  		  //do nothing
-	      }	else if ($value == 'supporters') {
+	  	  if ($value == 'supporters') {
 	        $supporter_control[] = $plugin;
 	      }	else if ($value == 'all') {
 	        $user_control[] = $plugin;
@@ -317,7 +315,7 @@ class PluginManager {
 
         set_time_limit(120);
 
-		$blogs = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = {$wpdb->siteid} AND spam = 0");
+		$blogs = $wpdb->get_col( $wpdb->prepare("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = %d AND spam = 0", $wpdb->siteid ) );
 		if ($blogs)	{
 		  foreach($blogs as $blog_id) {
 	   		switch_to_blog($blog_id);
@@ -340,7 +338,7 @@ class PluginManager {
 
         set_time_limit(120);
 
-		$blogs = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = {$wpdb->siteid} AND spam = 0");
+		$blogs = $wpdb->get_col( $wpdb->prepare("SELECT blog_id FROM {$wpdb->blogs} WHERE site_id = %d AND spam = 0", $wpdb->siteid ) );
 		if ($blogs)	{
     	foreach ($blogs as $blog_id)	{
 	   		switch_to_blog($blog_id);
@@ -365,9 +363,7 @@ class PluginManager {
 	  $override_plugins = (array)get_option('pm_plugin_override_list');
 
 	  foreach ( (array)$all_plugins as $plugin_file => $plugin_data) {
-	    if (in_array($plugin_file, $user_control) || in_array($plugin_file, $auto_activate) || in_array($plugin_file, $supporter_control) || in_array($plugin_file, $override_plugins)) {
-	      //do nothing - leave it in
-	    } else {
+	    if ( ! ( in_array($plugin_file, $user_control) || in_array($plugin_file, $auto_activate) || in_array($plugin_file, $supporter_control) || in_array($plugin_file, $override_plugins) ) ) {
 	      unset($all_plugins[$plugin_file]); //remove plugin
 	    }
 	  }
